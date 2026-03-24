@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-accent: #9D2449;
+  --color-brand-accent-dark: #7A1C39;
+  --color-brand-primary: #1F2937;
+  --color-brand-primary-dark: #111827;
+  --color-brand-secondary: #D1D5DB;
+  --color-brand-secondary-dark: #9CA3AF;
+  --color-brand-bg: #F9F8F6;
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-heading: "Playfair Display", serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-primary);
+}
+
+.prose {
+  color: #374151;
+  max-width: 65ch;
+}
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: var(--color-brand-primary);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+.prose strong {
+  color: var(--color-brand-primary-dark);
+  font-weight: 600;
+}
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.625em;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}

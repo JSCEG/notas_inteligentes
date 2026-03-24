@@ -1,0 +1,112 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: projects
+    // Fields:
+    //   - userId: string (required, < 100 chars)
+    //   - name: string (required, < 100 chars)
+    //   - createdAt: string (required, < 50 chars)
+    //
+    // Collection: notes
+    // Fields:
+    //   - userId: string (required, < 100 chars)
+    //   - projectId: string (required, < 100 chars)
+    //   - title: string (required, < 200 chars)
+    //   - transcript: string (required, < 1000000 chars)
+    //   - summary: string (required, < 500000 chars)
+    //   - date: string (required, < 50 chars)
+    //   - duration: number (optional)
+    //   - topicsTree: string (optional, < 500000 chars)
+    //   - speakerStats: string (optional, < 500000 chars)
+    //   - isShared: boolean (optional)
+    //   - tags: list of strings (optional, < 50 items, < 50 chars each)
+    // ===============================================================
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+    
+    function uidUnchanged() {
+      return !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid;
+    }
+    
+    function uidNotModified() {
+      return !('userId' in request.resource.data) || request.resource.data.userId == resource.data.userId;
+    }
+    
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidProject(data) {
+      return hasOnlyAllowedFields(['userId', 'name', 'createdAt']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.createdAt is string && data.createdAt.size() > 0 && data.createdAt.size() < 50;
+    }
+
+    function isValidNote(data) {
+      return hasOnlyAllowedFields(['userId', 'projectId', 'title', 'transcript', 'summary', 'date', 'duration', 'topicsTree', 'speakerStats', 'isShared', 'tags']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.projectId is string && data.projectId.size() > 0 && data.projectId.size() < 100 &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.transcript is string && data.transcript.size() < 1000000 &&
+             data.summary is string && data.summary.size() < 500000 &&
+             data.date is string && data.date.size() > 0 && data.date.size() < 50 &&
+             (!('duration' in data) || data.duration is number) &&
+             (!('topicsTree' in data) || (data.topicsTree is list && data.topicsTree.size() < 1000)) &&
+             (!('speakerStats' in data) || (data.speakerStats is list && data.speakerStats.size() < 1000)) &&
+             (!('isShared' in data) || data.isShared is bool) &&
+             (!('tags' in data) || (data.tags is list && data.tags.size() <= 50));
+    }
+
+    // ===============================================================
+    // Collections
+    // ===============================================================
+    
+    match /projects/{projectId} {
+      allow read: if isAuthenticated() && isDocOwner();
+      allow create: if isAuthenticated() && 
+                    hasRequiredFields(['userId', 'name', 'createdAt']) &&
+                    isValidProject(request.resource.data) && 
+                    uidUnchanged();
+      allow update: if isAuthenticated() && 
+                    isDocOwner() && 
+                    isValidProject(request.resource.data) && 
+                    uidNotModified();
+      allow delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /notes/{noteId} {
+      allow read: if (isAuthenticated() && isDocOwner()) || (resource.data.isShared == true);
+      allow create: if isAuthenticated() && 
+                    hasRequiredFields(['userId', 'projectId', 'title', 'transcript', 'summary', 'date']) &&
+                    isValidNote(request.resource.data) && 
+                    uidUnchanged();
+      allow update: if isAuthenticated() && 
+                    isDocOwner() && 
+                    isValidNote(request.resource.data) && 
+                    uidNotModified();
+      allow delete: if isAuthenticated() && isDocOwner();
+    }
+  }
+}

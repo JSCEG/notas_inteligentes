@@ -1,0 +1,7 @@
+{
+  "name": "Minuta Inteligente SENER",
+  "description": "Tomador de notas que transcribe audio e identifica personas en la conversación.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

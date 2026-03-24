@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "A project folder to group notes.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user who owns this project." },
+        "name": { "type": "string", "description": "The name of the project." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp." }
+      },
+      "required": ["userId", "name", "createdAt"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "A meeting note with transcript and summary.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user who owns this note." },
+        "projectId": { "type": "string", "description": "The ID of the project this note belongs to." },
+        "title": { "type": "string", "description": "The title of the note." },
+        "transcript": { "type": "string", "description": "The full transcript of the audio." },
+        "summary": { "type": "string", "description": "The summary of the transcript." },
+        "date": { "type": "string", "format": "date-time", "description": "The date the note was created." },
+        "duration": { "type": "number", "description": "The duration of the recording in seconds." },
+        "topicsTree": { "type": "array", "description": "Array of topics for visualization." },
+        "speakerStats": { "type": "array", "description": "Array of speaker statistics." },
+        "isShared": { "type": "boolean", "description": "Whether the note is publicly shared via link." },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Array of tags for filtering." }
+      },
+      "required": ["userId", "projectId", "title", "transcript", "summary", "date"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": { "$ref": "Project" },
+      "description": "Stores user projects."
+    },
+    "/notes/{noteId}": {
+      "schema": { "$ref": "Note" },
+      "description": "Stores user notes."
+    }
+  }
+}

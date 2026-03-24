@@ -1,0 +1,19 @@
+# wrangler.toml — Configuración para Cloudflare Pages
+# Documentación: https://developers.cloudflare.com/pages/platform/wrangler-configuration/
+
+name = "minuta-inteligente-sener"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
+
+# Variables de entorno para el Worker (functions/)
+# Las variables sensibles (GEMINI_API_KEY) NO van aquí:
+# agrégalas en Cloudflare Dashboard → Pages → Settings → Environment variables
+# como "Secret" para que no queden en texto plano.
+
+[vars]
+# Variables no sensibles de ejemplo:
+# APP_ENV = "production"
+
+# Para desarrollo local con `wrangler pages dev dist`:
+# Crea un archivo .dev.vars (ignorado por git) con:
+#   GEMINI_API_KEY=tu_clave_aqui
