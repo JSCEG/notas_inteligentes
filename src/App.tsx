@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Mic, Square, Loader2, Copy, FileText, Check, Plus, Folder, Search, Download, FileDown, FileType2, ChevronRight, Trash2, ArrowLeft, Save, LogOut, LogIn, PieChart as PieChartIcon, Network, MessageCircle, Share2, Edit2, Tag, X, ChevronLeft } from 'lucide-react';
+import { Mic, Square, Loader2, Copy, FileText, Check, Plus, Folder, Search, Download, FileDown, FileType2, ChevronRight, Trash2, ArrowLeft, Save, LogOut, LogIn, PieChart as PieChartIcon, Network, MessageCircle, Share2, Edit2, Tag, X, ChevronLeft, Menu } from 'lucide-react';
 import { ToastContainer, Toast, ToastType } from './components/ToastContainer';
 // Gemini se llama a través del proxy /api/gemini (Cloudflare Pages Function)
 // La API key nunca llega al bundle del cliente
@@ -125,6 +125,11 @@ export default function App() {
   const [newProjectName, setNewProjectName] = useState('');
   const [deleteProjectConfirm, setDeleteProjectConfirm] = useState<string | null>(null);
   const [deleteNoteConfirm, setDeleteNoteConfirm] = useState<string | null>(null);
+
+  // Mobile drawer
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
+  const closeMobileDrawer = useCallback(() => setIsMobileDrawerOpen(false), []);
   
   // Shared Note State
   const [sharedNoteId, setSharedNoteId] = useState<string | null>(null);
@@ -943,27 +948,163 @@ export default function App() {
         </div>
       </aside>
 
+      {/* ── Mobile Drawer ───────────────────────────────────────────────────── */}
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 bg-black/40 z-30 md:hidden transition-opacity duration-300 ${
+          isMobileDrawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={closeMobileDrawer}
+        aria-hidden="true"
+      />
+
+      {/* Drawer panel */}
+      <aside
+        className={`fixed top-0 left-0 h-full w-72 bg-white shadow-xl z-40 flex flex-col md:hidden
+          transition-transform duration-300 ease-in-out
+          ${isMobileDrawerOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        aria-label="Menú de navegación"
+      >
+        {/* Drawer header */}
+        <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <h1 className="font-heading text-brand-primary text-xl font-bold leading-tight">
+              Minuta <span className="italic text-brand-accent font-medium">Inteligente</span>
+            </h1>
+            <p className="text-xs text-gray-400 mt-0.5 uppercase tracking-wider font-semibold">Asistente de Reuniones</p>
+          </div>
+          <button
+            onClick={closeMobileDrawer}
+            className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 transition-colors"
+            aria-label="Cerrar menú"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Drawer nav */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* Dashboard */}
+          <div className="mb-6">
+            <button
+              onClick={() => {
+                setShowDashboard(true);
+                setActiveNoteId(null);
+                setIsRecordingMode(false);
+                closeMobileDrawer();
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                showDashboard ? 'bg-brand-accent text-white font-medium shadow-md' : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <PieChartIcon size={16} className={showDashboard ? 'text-white' : 'text-brand-secondary-dark'} />
+              <span>Resumen General</span>
+            </button>
+          </div>
+
+          {/* Projects */}
+          <div className="flex items-center justify-between mb-3 px-2">
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Proyectos</h2>
+            <button
+              onClick={() => {
+                setIsProjectModalOpen(true);
+                closeMobileDrawer();
+              }}
+              className="text-brand-primary hover:bg-gray-100 p-1 rounded transition-colors"
+              title="Nuevo Proyecto"
+            >
+              <Plus size={16} />
+            </button>
+          </div>
+          <ul className="space-y-1 mb-8">
+            {projects.map(project => (
+              <li key={project.id}>
+                <button
+                  onClick={() => {
+                    setActiveProjectId(project.id);
+                    setShowDashboard(false);
+                    setActiveNoteId(null);
+                    setIsRecordingMode(false);
+                    closeMobileDrawer();
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                    !showDashboard && activeProjectId === project.id
+                      ? 'bg-brand-accent text-white font-medium shadow-md'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 truncate">
+                    <Folder
+                      size={16}
+                      className={!showDashboard && activeProjectId === project.id ? 'text-white' : 'text-brand-secondary-dark'}
+                    />
+                    <span className="truncate">{project.name}</span>
+                  </div>
+                  {projects.length > 1 && (
+                    <Trash2
+                      size={14}
+                      className={`shrink-0 ${
+                        !showDashboard && activeProjectId === project.id
+                          ? 'text-white/70 hover:text-white'
+                          : 'text-gray-300 hover:text-red-500'
+                      } transition-colors`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteProjectConfirm(project.id);
+                        closeMobileDrawer();
+                      }}
+                    />
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Drawer footer — user info + logout */}
+        <div className="p-4 border-t border-gray-100 bg-gray-50">
+          <div className="flex items-center gap-3 mb-3 px-2">
+            <img
+              src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email}`}
+              alt="Avatar"
+              className="w-8 h-8 rounded-full"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">{user.displayName || 'Usuario'}</p>
+              <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => { handleLogout(); closeMobileDrawer(); }}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          >
+            <LogOut size={16} /> Cerrar Sesión
+          </button>
+        </div>
+      </aside>
+
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Mobile Header */}
-        <header className="md:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-          <h1 className="font-heading text-brand-primary font-bold">Minuta Inteligente</h1>
-          <div className="flex items-center gap-2">
-            <select 
-              className="bg-gray-50 border border-gray-200 text-sm rounded-lg px-2 py-1.5 focus:ring-brand-primary focus:border-brand-primary max-w-[120px]"
-              value={activeProjectId}
-              onChange={(e) => {
-                setActiveProjectId(e.target.value);
-                setActiveNoteId(null);
-                setIsRecordingMode(false);
-              }}
+        <header className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileDrawerOpen(true)}
+              className="p-1.5 rounded-lg text-brand-primary hover:bg-gray-100 transition-colors"
+              aria-label="Abrir menú"
             >
-              {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-            </select>
-            <button onClick={handleLogout} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg">
-              <LogOut size={18} />
+              <Menu size={22} />
             </button>
+            <h1 className="font-heading text-brand-primary font-bold leading-tight">
+              Minuta <span className="italic text-brand-accent font-medium text-base">Inteligente</span>
+            </h1>
           </div>
+          {/* Proyecto activo — pill informativo */}
+          {activeProject && !showDashboard && (
+            <span className="text-xs font-medium bg-brand-accent/10 text-brand-accent px-2.5 py-1 rounded-full truncate max-w-[120px]">
+              {activeProject.name}
+            </span>
+          )}
         </header>
 
         {/* Content Area */}
