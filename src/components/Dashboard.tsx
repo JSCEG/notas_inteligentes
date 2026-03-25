@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Folder, PieChart as PieChartIcon } from 'lucide-react';
+import { FileText, Folder, PieChart as PieChartIcon, Mic } from 'lucide-react';
 import { Project, Note } from '../types';
 import { formatTime } from '../utils';
 

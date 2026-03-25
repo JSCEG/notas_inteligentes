@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Search, Tag, X, FileText, Trash2, ChevronLeft, ChevronRight, Upload } from 'lucide-react';
+import { Plus, Search, Tag, X, FileText, Trash2, ChevronLeft, ChevronRight, Upload, Mic } from 'lucide-react';
 import { Project, Note } from '../types';
 import { formatTime } from '../utils';
 
