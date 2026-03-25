@@ -25,6 +25,8 @@ service cloud.firestore {
     //   - speakerStats: string (optional, < 500000 chars)
     //   - isShared: boolean (optional)
     //   - tags: list of strings (optional, < 50 items, < 50 chars each)
+    //   - actionItems: list of objects (optional, < 100 items)
+    //   - audioUrl: string (optional, < 1000 chars)
     // ===============================================================
     
     // ===============================================================
@@ -65,7 +67,7 @@ service cloud.firestore {
     }
 
     function isValidNote(data) {
-      return hasOnlyAllowedFields(['userId', 'projectId', 'title', 'transcript', 'summary', 'date', 'duration', 'topicsTree', 'speakerStats', 'isShared', 'tags']) &&
+      return hasOnlyAllowedFields(['userId', 'projectId', 'title', 'transcript', 'summary', 'date', 'duration', 'topicsTree', 'speakerStats', 'isShared', 'tags', 'actionItems', 'audioUrl']) &&
              data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
              data.projectId is string && data.projectId.size() > 0 && data.projectId.size() < 100 &&
              data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
@@ -76,7 +78,9 @@ service cloud.firestore {
              (!('topicsTree' in data) || (data.topicsTree is list && data.topicsTree.size() < 1000)) &&
              (!('speakerStats' in data) || (data.speakerStats is list && data.speakerStats.size() < 1000)) &&
              (!('isShared' in data) || data.isShared is bool) &&
-             (!('tags' in data) || (data.tags is list && data.tags.size() <= 50));
+             (!('tags' in data) || (data.tags is list && data.tags.size() <= 50)) &&
+             (!('actionItems' in data) || (data.actionItems is list && data.actionItems.size() <= 100)) &&
+             (!('audioUrl' in data) || (data.audioUrl is string && data.audioUrl.size() < 1000));
     }
 
     // ===============================================================

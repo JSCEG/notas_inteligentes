@@ -26,7 +26,21 @@
         "topicsTree": { "type": "array", "description": "Array of topics for visualization." },
         "speakerStats": { "type": "array", "description": "Array of speaker statistics." },
         "isShared": { "type": "boolean", "description": "Whether the note is publicly shared via link." },
-        "tags": { "type": "array", "items": { "type": "string" }, "description": "Array of tags for filtering." }
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Array of tags for filtering." },
+        "actionItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "text": { "type": "string" },
+              "completed": { "type": "boolean" }
+            },
+            "required": ["id", "text", "completed"]
+          },
+          "description": "Interactive to-do list extracted from the meeting."
+        },
+        "audioUrl": { "type": "string", "description": "URL of the original audio recording stored in Firebase Storage." }
       },
       "required": ["userId", "projectId", "title", "transcript", "summary", "date"]
     }

@@ -6,6 +6,3 @@ coverage/
 *.log
 .env*
 !.env.example
-
-# Credenciales de Firebase — nunca subir al repo
-firebase-applet-config.json

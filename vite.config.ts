@@ -1,24 +1,24 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { defineConfig } from 'vite';
+import {defineConfig, loadEnv} from 'vite';
 
-// Las variables VITE_* en .env se exponen automáticamente a través de import.meta.env.
-// GEMINI_API_KEY NO tiene prefijo VITE_ para que nunca llegue al bundle del cliente;
-// se inyecta exclusivamente en el Cloudflare Worker (functions/api/gemini.js).
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, '.'),
+export default defineConfig(({mode}) => {
+  const env = loadEnv(mode, '.', '');
+  return {
+    plugins: [react(), tailwindcss()],
+    define: {
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
-  },
-  server: {
-    hmr: process.env.DISABLE_HMR !== 'true',
-    // Proxy local para desarrollo: redirige /api/gemini al worker de Cloudflare
-    // Si usas `wrangler pages dev` localmente, este proxy no es necesario.
-    // proxy: {
-    //   '/api': 'http://localhost:8788',
-    // },
-  },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '.'),
+      },
+    },
+    server: {
+      // HMR is disabled in AI Studio via DISABLE_HMR env var.
+      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
+      hmr: process.env.DISABLE_HMR !== 'true',
+    },
+  };
 });

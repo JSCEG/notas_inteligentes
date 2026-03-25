@@ -15,10 +15,104 @@
   --font-heading: "Playfair Display", serif;
 }
 
+:root {
+  --bg-color: #F9F8F6;
+  --text-color: #1F2937;
+  --card-bg: #FFFFFF;
+  --border-color: #E5E7EB;
+  --sidebar-bg: #FFFFFF;
+}
+
+.dark {
+  --bg-color: #111827;
+  --text-color: #F9FAFB;
+  --card-bg: #1F2937;
+  --border-color: #374151;
+  --sidebar-bg: #1F2937;
+  --color-brand-bg: #111827;
+  --color-brand-primary: #F9FAFB;
+  --color-brand-primary-dark: #D1D5DB;
+}
+
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-brand-bg);
-  color: var(--color-brand-primary);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark .bg-white {
+  background-color: var(--card-bg) !important;
+}
+
+.dark .bg-brand-bg {
+  background-color: var(--bg-color) !important;
+}
+
+.dark .text-gray-900 {
+  color: #F9FAFB !important;
+}
+
+.dark .text-gray-800 {
+  color: #F3F4F6 !important;
+}
+
+.dark .text-gray-700 {
+  color: #E5E7EB !important;
+}
+
+.dark .text-gray-600 {
+  color: #D1D5DB !important;
+}
+
+.dark .text-gray-500 {
+  color: #9CA3AF !important;
+}
+
+.dark .border-gray-200, .dark .border-gray-100, .dark .border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #374151 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #4B5563 !important;
+}
+
+.dark .hover\:bg-gray-50:hover {
+  background-color: #374151 !important;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  background-color: #4B5563 !important;
+}
+
+.dark .prose {
+  color: #D1D5DB !important;
+}
+
+.dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 {
+  color: #F9FAFB !important;
+}
+
+.dark .prose strong {
+  color: #F3F4F6 !important;
+}
+
+.dark input, .dark select, .dark textarea {
+  background-color: #374151 !important;
+  color: #F9FAFB !important;
+  border-color: #4B5563 !important;
+}
+
+.dark .bg-amber-50\/50 {
+  background-color: rgba(251, 191, 36, 0.1) !important;
+}
+
+.dark .border-amber-100 {
+  border-color: rgba(251, 191, 36, 0.2) !important;
 }
 
 .prose {
