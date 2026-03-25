@@ -56,18 +56,22 @@ export const TranscriptReader: React.FC<TranscriptReaderProps> = ({ transcript }
       return (
         <div className={`p-4 rounded-xl ${highContrast ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
           {getSpeakerStyle(speakerName)}
-          <ReactMarkdown className={`prose max-w-none ${highContrast ? 'prose-invert text-gray-300' : 'text-gray-700'}`}>
-            {text}
-          </ReactMarkdown>
+          <div className={`prose max-w-none ${highContrast ? 'prose-invert text-gray-300' : 'text-gray-700'}`}>
+            <ReactMarkdown>
+              {text}
+            </ReactMarkdown>
+          </div>
         </div>
       );
     }
 
     // Texto normal sin hablante identificado
     return (
-      <ReactMarkdown className={`prose max-w-none ${highContrast ? 'prose-invert text-gray-300' : 'text-gray-700'}`}>
-        {chunk}
-      </ReactMarkdown>
+      <div className={`prose max-w-none ${highContrast ? 'prose-invert text-gray-300' : 'text-gray-700'}`}>
+        <ReactMarkdown>
+          {chunk}
+        </ReactMarkdown>
+      </div>
     );
   };
 
