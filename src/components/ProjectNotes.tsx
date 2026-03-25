@@ -221,6 +221,14 @@ export const ProjectNotes: React.FC<ProjectNotesProps> = ({
           </button>
         </div>
       )}
+
+      {/* Mobile Floating Action Button */}
+      <button 
+        onClick={() => setIsRecordingMode(true)}
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-brand-accent text-white rounded-full shadow-lg flex items-center justify-center hover:bg-brand-accent-dark hover:scale-105 transition-all z-50 focus:outline-none focus:ring-4 focus:ring-brand-accent/30"
+      >
+        <Mic size={24} />
+      </button>
     </div>
   );
 };
