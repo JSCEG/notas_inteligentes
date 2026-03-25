@@ -4,6 +4,7 @@ import Markdown from 'react-markdown';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Note } from '../types';
 import { formatTime } from '../utils';
+import { TranscriptReader } from './TranscriptReader';
 
 interface SharedNoteProps {
   sharedNote: Note | null;
@@ -162,8 +163,8 @@ export const SharedNote: React.FC<SharedNoteProps> = ({ sharedNote, sharedNoteEr
               <h3 className="text-xl font-heading font-bold text-gray-900 border-b-2 border-gray-200 pb-2 mb-6 flex items-center gap-2">
                 <Mic size={24} /> Transcripción Completa
               </h3>
-              <div className="prose prose-sm sm:prose-base max-w-none text-gray-600 bg-gray-50 p-6 rounded-xl border border-gray-100">
-                <Markdown>{sharedNote.transcript}</Markdown>
+              <div className="p-0 bg-white rounded-xl border border-gray-100 overflow-hidden">
+                <TranscriptReader transcript={sharedNote.transcript} />
               </div>
             </div>
           </div>

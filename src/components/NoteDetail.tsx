@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Share2, FileDown, FileText, FileType2, Edit2, Save, X, Tag, Plus, Mic, CheckSquare, PieChart as PieChartIcon, Network, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import Markdown from 'react-markdown';
+import { TranscriptReader } from './TranscriptReader';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Note } from '../types';
 import { formatTime } from '../utils';
@@ -436,40 +437,7 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-100 space-y-4">
-                  <Markdown
-                    components={{
-                      p: ({node, children, ...props}) => {
-                        const firstChild = node?.children?.[0];
-                        const isSpeakerLine = firstChild?.type === 'element' && firstChild.tagName === 'strong';
-                        
-                        if (isSpeakerLine) {
-                          return (
-                            <div className="mb-4 bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-brand-primary/30 transition-colors">
-                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-primary/50 group-hover:bg-brand-primary transition-colors"></div>
-                              <p className="m-0 text-gray-700 leading-relaxed [&>strong:first-child]:text-brand-primary [&>strong:first-child]:text-xs [&>strong:first-child]:uppercase [&>strong:first-child]:tracking-wider [&>strong:first-child]:bg-brand-primary/10 [&>strong:first-child]:px-2 [&>strong:first-child]:py-1 [&>strong:first-child]:rounded-md [&>strong:first-child]:mr-2" {...props}>
-                                {children}
-                              </p>
-                            </div>
-                          );
-                        }
-                        return <p className="mb-4 text-gray-600 leading-relaxed" {...props}>{children}</p>;
-                      },
-                      strong: ({node, ...props}) => <strong className="font-bold text-gray-900" {...props} />,
-                      blockquote: ({node, ...props}) => (
-                        <blockquote className="border-l-4 border-brand-accent pl-4 italic text-gray-600 bg-brand-accent/5 py-3 pr-4 rounded-r-lg my-4" {...props} />
-                      ),
-                      ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4 space-y-2 text-gray-700" {...props} />,
-                      ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-4 space-y-2 text-gray-700" {...props} />,
-                      li: ({node, ...props}) => <li {...props} />,
-                      h1: ({node, ...props}) => <h1 className="text-2xl font-bold text-gray-900 mb-4 mt-6" {...props} />,
-                      h2: ({node, ...props}) => <h2 className="text-xl font-bold text-gray-800 mb-3 mt-5" {...props} />,
-                      h3: ({node, ...props}) => <h3 className="text-lg font-bold text-gray-800 mb-2 mt-4" {...props} />,
-                    }}
-                  >
-                    {activeNote.transcript.replace(/^([A-Za-z0-9 áéíóúÁÉÍÓÚñÑ]+):/gm, '**$1:**')}
-                  </Markdown>
-                </div>
+                <TranscriptReader transcript={activeNote.transcript} />
               )
             )}
           </div>
