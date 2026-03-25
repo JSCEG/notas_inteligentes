@@ -5,9 +5,6 @@ name = "minuta-inteligente-sener"
 compatibility_date = "2024-09-23"
 pages_build_output_dir = "dist"
 
-[assets]
-directory = "dist"
-
 # Variables de entorno para el Worker (functions/)
 # Las variables sensibles (GEMINI_API_KEY) NO van aquí:
 # agrégalas en Cloudflare Dashboard → Pages → Settings → Environment variables
