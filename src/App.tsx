@@ -567,14 +567,22 @@ export default function App() {
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <select 
-              className="bg-gray-50 border border-gray-200 text-sm rounded-lg px-2 py-1.5 focus:ring-brand-primary focus:border-brand-primary max-w-[120px]"
-              value={activeProjectId}
+              className="bg-gray-50 border border-gray-200 text-sm rounded-lg px-2 py-1.5 focus:ring-brand-primary focus:border-brand-primary max-w-[120px] truncate"
+              value={showDashboard ? 'dashboard' : activeProjectId}
               onChange={(e) => {
-                setActiveProjectId(e.target.value);
-                setActiveNoteId(null);
-                setIsRecordingMode(false);
+                if (e.target.value === 'dashboard') {
+                  setShowDashboard(true);
+                  setActiveNoteId(null);
+                  setIsRecordingMode(false);
+                } else {
+                  setActiveProjectId(e.target.value);
+                  setActiveNoteId(null);
+                  setShowDashboard(false);
+                  setIsRecordingMode(false);
+                }
               }}
             >
+              <option value="dashboard">🏠 Dashboard</option>
               {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <button onClick={handleLogout} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg">
